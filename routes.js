@@ -9,6 +9,7 @@ router.get("/", (request, response) => {
   response.json({"message": "app works!"});
 });
 
-router.get('/users', UserController.GetUsers);
+router.get('/users', UserController.GetEleitores);
+router.get('/users/psd', UserController.GetEleitorByPartido);
 
 module.exports = router;
