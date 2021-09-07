@@ -10,10 +10,10 @@ async function loginUser(credentials) {
     body: JSON.stringify(credentials)
   })
     .then(data => data.json())
- }
+}
 
 export default function Login({ setToken }) {
-  
+
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
@@ -26,7 +26,7 @@ export default function Login({ setToken }) {
     setToken(token);
   }
 
-  return(
+  return (
     <div className="login-wrapper">
       <h1>Please Log In</h1>
       <form onSubmit={handleSubmit}>

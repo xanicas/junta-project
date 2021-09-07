@@ -171,7 +171,7 @@ function Eleitores() {
 
   useEffect(() => {
     async function getData() {
-      await axios.get("/api/users", {
+      await axios.get("/api/eleitores", {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }

@@ -1,28 +1,34 @@
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
-exports.GetEleitores = (request, response) => {
-    User.getEleitores((err, result) => {
-        if(err)
-            response.send({ success: false, message: "Error" })
-        else
-            response.send({ success: true, data: result })
-    })
-}
-
-exports.GetEleitoresPSD = (request, response) => {
-    User.getEleitoresPSD((err, result) => {
-        if(err)
-            response.send({ success: false, message: "Error" })
-        else
-            response.send({ success: true, data: result })
-    })
-}
-
-exports.GetEleitoresPS = (request, response) => {
-    User.getEleitoresPS((err, result) => {
-        if(err)
-            response.send({ success: false, message: "Error" })
-        else
-            response.send({ success: true, data: result })
-    })
+exports.Login = (req, res, next) => {
+    User.getUserByEmail({ email: req.body.email }).then(
+        (user) => {
+            if (!user) {
+                return res.status(401).json({
+                    error: new Error('User not found!')
+                });
+            }
+            if (req.body.password === user.password) {
+                const token = jwt.sign(
+                    { userId: user._id },
+                    'RANDOM_TOKEN_SECRET',
+                    { expiresIn: '24h' });
+                res.status(200).json({
+                    userId: user._id,
+                    token: token
+                });
+            } else {
+                return res.status(401).json({
+                    error: new Error('Incorrect password!')
+                });
+            }
+        }
+    ).catch(
+        (error) => {
+            res.status(500).json({
+                error: error
+            });
+        }
+    );
 }

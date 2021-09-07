@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "excel-to-mysql": "^2.6.2",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1"
   }
 }

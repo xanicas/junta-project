@@ -1,10 +1,10 @@
 const connection = require('../database');
 
-exports.getEleitores = (callback) => {
+exports.getUsers = (callback) => {
     connection.getConnection((err, con) => {
         if(err)
             callback(null)
-        const query = "SELECT * FROM eleitores;"
+        const query = "SELECT * FROM users;"
         con.query(query, (err, result) => {
             con.release();
             if(err)
@@ -14,26 +14,13 @@ exports.getEleitores = (callback) => {
     })
 }
 
-exports.getEleitoresPSD = (callback) => {
-    connection.getConnection((err, con) => {
-        if(err)
-            callback(null);
-        const query = "select * from eleitores where psd = 1";
-        con.query(query, (err, results) => {
-            con.release();
-            if(err)
-                callback(null)
-            callback(null, results)
-        })
-    })
-}
 
-exports.getEleitoresPS = (callback) => {
+exports.getUserByEmail = (email, callback) => {
     connection.getConnection((err, con) => {
         if(err)
             callback(null);
-        const query = "select * from eleitores where ps = 1";
-        con.query(query, (err, results) => {
+        const query = "select * from users where email = ?";
+        con.query(query, email, (err, results) => {
             con.release();
             if(err)
                 callback(null)
