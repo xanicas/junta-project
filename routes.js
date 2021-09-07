@@ -10,6 +10,8 @@ router.get("/", (request, response) => {
 });
 
 router.get('/users', UserController.GetEleitores);
-router.get('/users/psd', UserController.GetEleitorByPartido);
+router.get('/users/psd', UserController.GetEleitoresPSD);
+router.get('/users/ps', UserController.GetEleitoresPS);
+
 
 module.exports = router;

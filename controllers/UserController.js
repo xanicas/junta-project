@@ -9,8 +9,17 @@ exports.GetEleitores = (request, response) => {
     })
 }
 
-exports.GetEleitorByPartido = (request, response) => {
-    User.getEleitorByPartido((err, result) => {
+exports.GetEleitoresPSD = (request, response) => {
+    User.getEleitoresPSD((err, result) => {
+        if(err)
+            response.send({ success: false, message: "Error" })
+        else
+            response.send({ success: true, data: result })
+    })
+}
+
+exports.GetEleitoresPS = (request, response) => {
+    User.getEleitoresPS((err, result) => {
         if(err)
             response.send({ success: false, message: "Error" })
         else

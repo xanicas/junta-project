@@ -12,6 +12,12 @@ app.use(cors());
 
 app.use('/api', routes);
 
+app.use('/api/login', (req, res) => {
+	res.send({
+	  token: 'test123'
+	});
+});
+
 let server = http.createServer(app);
 
 server.listen(port, () => {
