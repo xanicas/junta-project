@@ -1,25 +1,17 @@
+require("dotenv").config();
 const express = require('express');
-const cors = require('cors')
-const http = require('http');
+const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const routes = require('./routes');
 
-const mysql = require('mysql');
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(express.urlencoded({extended: true}));
+app.use(express.json()) // To parse the incoming requests with JSON payloads
 
+app.use(cookieParser('82e4e438a0705fabf61f9854e3b575af'));
 app.use('/api', routes);
 
-app.use('/api/login', (req, res) => {
-	res.send({
-	  token: 'test123'
-	});
-});
-
-let server = http.createServer(app);
-
-server.listen(port, () => {
-	console.log(`Listen on port ${port}`)
-})
+app.use(express.static(path.join(__dirname, '/client/build'))).listen(port, () => console.log(`Listening on ${port}`));

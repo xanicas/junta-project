@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 import { useTable,  useFilters, usePagination, useGlobalFilter, useAsyncDebounce } from 'react-table'
 
 function GlobalFilter({
@@ -17,6 +16,7 @@ function GlobalFilter({
     <span>
       Search:{' '}
       <input
+        className="inputSearch"
         value={value || ""}
         onChange={e => {
           setValue(e.target.value);
@@ -49,7 +49,7 @@ function DefaultColumnFilter({
   )
 }
 
-function Table({ columns, data }) {
+function Table({ columns, data, updateMyData, skipPageReset }) {
   const filterTypes = React.useMemo(
     () => ({
       // Or, override the default text filter to use
@@ -106,6 +106,8 @@ function Table({ columns, data }) {
       initialState: { pageIndex: 0 },
       defaultColumn, // Be sure to pass the defaultColumn option
       filterTypes,
+      autoResetPage: !skipPageReset,
+      updateMyData,
     },
     useFilters, // useFilters!
     useGlobalFilter, // useGlobalFilter!
@@ -115,21 +117,6 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
@@ -164,7 +151,14 @@ function Table({ columns, data }) {
             return (
               <tr {...row.getRowProps()}>
                 {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  return <td {...cell.getCellProps({
+                    className: cell.column.className,
+                    style: {
+                      width: cell.column.width,
+                    },
+                  })}>
+                  {cell.render('Cell')}
+                </td>
                 })}
               </tr>
             )

@@ -14,6 +14,19 @@ exports.getEleitores = (callback) => {
     })
 }
 
+exports.updateEleitor = (id, columnId, value, callback) => {
+    connection.getConnection((err, con) => {
+        if(err)
+            callback(null)
+        const query = "update eleitores set ?? = ? where id = ?"
+        con.query(query, [columnId, value, id], (err, result) => {
+            if(err)
+                callback(null)
+            callback(null, result);
+        })
+    })
+}
+
 exports.getEleitoresPSD = (callback) => {
     connection.getConnection((err, con) => {
         if(err)

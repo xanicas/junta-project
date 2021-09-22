@@ -36,6 +36,23 @@ const Styles = styled.div`
         padding: 0;
         margin: 0;
         border: 0;
+        width: 50px;
+
+        &.inputSearch {
+          width: 470px !important;
+        }
+      }
+
+      &.cellName {
+        input {
+          width: 470px !important;
+        }
+      }
+
+      &.cellContact {
+        input {
+          width: 100px !important;
+        }
       }
     }
   }
@@ -94,7 +111,7 @@ const EditableCell = ({
 
   // We'll only update the external data when the input is blurred
   const onBlur = () => {
-    //updateMyData(index, id, value)
+    updateMyData(index, id, value)
   }
 
   // If the initialValue is changed external, sync it up with our state
@@ -105,10 +122,10 @@ const EditableCell = ({
   return <input value={value} onChange={onChange} onBlur={onBlur} />
 }
 
-
 function Eleitores() {
   const [loadingData, setLoadingData] = useState(true);
   const [skipPageReset, setSkipPageReset] = useState(false)
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -121,6 +138,7 @@ function Eleitores() {
             Filter: SelectColumnFilter,
             filter: 'includes',
             Cell: EditableCell,
+            width: 70
           },
           {
             Header: 'PS',
@@ -128,6 +146,7 @@ function Eleitores() {
             Filter: SelectColumnFilter,
             filter: 'includes',
             Cell: EditableCell,
+            width: 70
           },
           {
             Header: 'Other',
@@ -135,6 +154,7 @@ function Eleitores() {
             Filter: SelectColumnFilter,
             filter: 'includes',
             Cell: EditableCell,
+            width: 70
           }
         ],
       },
@@ -142,32 +162,45 @@ function Eleitores() {
         Header: 'Info',
         columns: [
           {
-            Header: 'ID',
-            accessor: 'id',
+            Header: 'Votou',
+            accessor: 'hasVoted',
+            Filter: SelectColumnFilter,
+            filter: 'includes',
+            Cell: EditableCell,
+            width: 20
           },
           {
             Header: 'Nome',
             accessor: 'name',
+            Cell: EditableCell,
+            width: 400,
+            className: "cellName",
           },
           {
             Header: 'Contacto',
             accessor: 'contact',
+            Cell: EditableCell,
+            className: "cellContact",
+            width: 100
           },
           {
             Header: 'Idade',
             accessor: 'age',
+            Cell: EditableCell,
+            width: 70
           },
           {
             Header: 'Morada',
             accessor: 'address',
+            Cell: EditableCell,
+            width: 400,
+            className: "cellName",
           }
         ],
       },
     ],
     []
   )
-
-  const [data, setData] = useState([]);
 
   useEffect(() => {
     async function getData() {
@@ -186,25 +219,61 @@ function Eleitores() {
             address: e.address,
             psd: e.psd,
             ps: e.ps,
-            other: e.other
+            other: e.other,
+            hasVoted: e.hasVoted
           })
           );
-          console.log('result -> ', result);
           setData(result);
-          // you tell it that you had the result
           setLoadingData(false);
         }
       });
     }
     if (loadingData) {
-      // if the result is not ready so you make the axios call
       getData();
     }
   }, []);
 
+  const updateMyData = (rowIndex, columnId, value) => {
+    // We also turn on the flag to not reset the page
+    setSkipPageReset(true)
+    setData(old =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          const qs = require("qs");
+          const eleitor_id = data[rowIndex].id;
+          const url = "/api/eleitores/" + eleitor_id;
+          const data_sent = { columnId: columnId, value: value }
+          axios.put(url, qs.stringify(data_sent), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }).then(response => {
+            console.log(response)
+          }).catch(error => {
+            console.log(error)
+          })
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          }
+        }
+        return row
+      })
+    )
+  }
+
+  const createNewEleitor = () => {
+    console.log(data)
+  }
+
   return (
     <Styles>
-      <Table columns={columns} data={data} />
+      <button onClick={createNewEleitor}>Create new</button>
+      <Table
+        columns={columns}
+        data={data}
+        updateMyData={updateMyData}
+        skipPageReset={skipPageReset} />
     </Styles>
   )
 }
