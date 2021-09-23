@@ -21,6 +21,15 @@ exports.UpdateEleitor = (request, response) => {
     })
 }
 
+exports.CreateEleitor = (request, response) => {
+    Eleitor.createEleitor((err, result) => {
+        if(err)
+            response.send({ success: false, message: "Error" })
+        else
+            response.send({ success: true, data: result })
+    })
+}
+
 exports.GetEleitoresPSD = (request, response) => {
     Eleitor.getEleitoresPSD((err, result) => {
         if(err)

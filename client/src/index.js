@@ -8,8 +8,6 @@ import Eleitores from './pages/Eleitores';
 function View(props) {
   const { screen, setScreen } = props;
 
-  const [data, setData] = useState();
-
   const deleteCookie = async () => {
     try {
       await axios.get('/api/clear-cookie');
@@ -19,22 +17,10 @@ function View(props) {
     }
   };
 
-  const getData = async () => {
-    try {
-      const res = await axios.get('/api/get-data');
-      console.log(res.data)
-      setData(res.data);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   return (
     <div>
       <p>{screen}</p>
-      <p>{data}</p>
       <Eleitores />
-      <button onClick={getData}>Get Data</button>
       <button onClick={deleteCookie}>Logout</button>
     </div>
   );

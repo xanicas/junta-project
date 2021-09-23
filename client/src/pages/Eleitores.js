@@ -138,7 +138,8 @@ function Eleitores() {
             Filter: SelectColumnFilter,
             filter: 'includes',
             Cell: EditableCell,
-            width: 70
+            width: 70,
+            className: "cellPSD",
           },
           {
             Header: 'PS',
@@ -167,7 +168,7 @@ function Eleitores() {
             Filter: SelectColumnFilter,
             filter: 'includes',
             Cell: EditableCell,
-            width: 20
+            width: 70
           },
           {
             Header: 'Nome',
@@ -212,15 +213,15 @@ function Eleitores() {
         if (response.data.success) {
           const data = response.data.data;
           const result = data.map(e => ({
-            id: e.id,
-            name: e.name,
-            contact: e.contact,
-            age: e.age,
-            address: e.address,
-            psd: e.psd,
-            ps: e.ps,
-            other: e.other,
-            hasVoted: e.hasVoted
+            id: e.id || '',
+            name: e.name || '',
+            contact: e.contact || '0',
+            age: e.age || '0',
+            address: e.address || '',
+            psd: e.psd || '0',
+            ps: e.ps || '0',
+            other: e.other || '0',
+            hasVoted: e.hasVoted || '0'
           })
           );
           setData(result);
@@ -262,8 +263,16 @@ function Eleitores() {
     )
   }
 
-  const createNewEleitor = () => {
-    console.log(data)
+  const createNewEleitor = async () => {
+    await axios.post("/api/eleitores", {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }).then(response => {
+      console.log(response)
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   return (
@@ -271,7 +280,7 @@ function Eleitores() {
       <button onClick={createNewEleitor}>Create new</button>
       <Table
         columns={columns}
-        data={data}
+        data={data.sort((a,b) => a.name > b.name ? 1 : -1)}
         updateMyData={updateMyData}
         skipPageReset={skipPageReset} />
     </Styles>

@@ -1,56 +1,68 @@
 const connection = require('../database');
 
 exports.getEleitores = (callback) => {
-    connection.getConnection((err, con) => {
-        if(err)
-            callback(null)
-        const query = "SELECT * FROM eleitores;"
-        con.query(query, (err, result) => {
-            con.release();
-            if(err)
-                callback(null)
-            callback(null, result)
-        })
-    })
+    connection.connect(function(err, client, done) {
+        if(err) {
+          return console.error('connexion error', err);
+        }
+        client.query('SELECT * FROM public.eleitores;', function(err, data) {
+          done();
+          if(err) {
+            return console.error('error running query', err);
+          }
+          callback(null, data.rows);
+        });
+    });
 }
 
-exports.updateEleitor = (id, columnId, value, callback) => {
-    connection.getConnection((err, con) => {
-        if(err)
-            callback(null)
-        const query = "update eleitores set ?? = ? where id = ?"
-        con.query(query, [columnId, value, id], (err, result) => {
-            if(err)
-                callback(null)
-            callback(null, result);
-        })
-    })
+exports.updateEleitor = async (id, columnId, value, callback) => {
+    connection.connect(function(err, client, done) {
+        if(err) {
+          return console.error('connexion error', err);
+        }
+        const format = require('pg-format');
+        const query = format("update public.eleitores set %I = $1 where id = $2;", columnId);
+        client.query(query, [value, id], function(err, data) {
+          done();
+          if(err) {
+            return console.error('error running query', err);
+          }
+          callback(null, data);
+        });
+    });
+}
+
+exports.createEleitor = (callback) => {
+    connection.connect(function(err, client, done) {
+        if(err) {
+          return console.error('connexion error', err);
+        }
+        client.query("INSERT INTO public.eleitores(psd, ps, other, indef, abst, name, contact, day, month, year, age, natur, address) VALUES ('', '', 0, 0, 0, '', '', '', 0, 0, 0, '', '');", function(err, data) {
+          done();
+          if(err) {
+            return console.error('error running query', err);
+          }
+          callback(null, data.rows);
+        });
+    });
 }
 
 exports.getEleitoresPSD = (callback) => {
-    connection.getConnection((err, con) => {
-        if(err)
-            callback(null);
-        const query = "select * from eleitores where psd = 1";
-        con.query(query, (err, results) => {
-            con.release();
-            if(err)
-                callback(null)
-            callback(null, results)
-        })
-    })
+    connection.connect();
+    const query = "select * from public.eleitores where psd = 1"
+    connection.query(query, (err, result) => {
+        if (err)
+            callback(null)
+        callback(null, result.rows)
+    });
 }
 
 exports.getEleitoresPS = (callback) => {
-    connection.getConnection((err, con) => {
-        if(err)
-            callback(null);
-        const query = "select * from eleitores where ps = 1";
-        con.query(query, (err, results) => {
-            con.release();
-            if(err)
-                callback(null)
-            callback(null, results)
-        })
-    })
+    connection.connect();
+    const query = "select * from public.eleitores where ps = 1"
+    connection.query(query, (err, result) => {
+        if (err)
+            callback(null)
+        callback(null, result.rows)
+    });
 }

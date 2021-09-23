@@ -24,8 +24,6 @@ router.get('/authenticate', auth, (req, res) => {
       signed: true,
   };
 
-  console.log(req.auth.user);
-
   if (req.auth.user === 'admin') {
       res.cookie('name', 'admin', options).send({ screen: 'admin' });
   } else if (req.auth.user === 'user') {
@@ -60,6 +58,7 @@ router.get('/get-data', (req, res) => {
 
 router.get('/eleitores', EleitorController.GetEleitores);
 router.put('/eleitores/:id', EleitorController.UpdateEleitor);
+router.post('/eleitores', EleitorController.CreateEleitor);
 
 router.get('/eleitores/psd', EleitorController.GetEleitoresPSD);
 router.get('/eleitores/ps', EleitorController.GetEleitoresPS);
