@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
-
 import axios from 'axios';
 
+// STYLES
+import './assets/css/styles.css';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+// PAGES
 import Eleitores from './pages/Eleitores';
+import Login from './pages/Login';
 
 function View(props) {
   const { screen, setScreen } = props;
@@ -18,31 +23,16 @@ function View(props) {
   };
 
   return (
-    <div>
-      <p>{screen}</p>
-      <Eleitores />
-      <button onClick={deleteCookie}>Logout</button>
+    <div className="container">
+      <h1 className="heading">Lista</h1>
+      <Eleitores screen={screen} setScreen={setScreen}/>
+      <button type="submit" className="btn btn-primary" onClick={deleteCookie}>Logout</button>
     </div>
   );
 }
 
 function App() {
-
   const [screen, setScreen] = useState('auth');
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
-
-  const auth = async () => {
-    try {
-      const res = await axios.get('/api/authenticate', { auth: { username, password } });
-
-      if (res.data.screen !== undefined) {
-        setScreen(res.data.screen);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const readCookie = async () => {
     try {
@@ -62,19 +52,9 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="app">
       {screen === 'auth'
-        ? <div>
-          <label>Username: </label>
-          <br />
-          <input type="text" onChange={e => setUsername(e.target.value)} />
-          <br />
-          <label>Password: </label>
-          <br />
-          <input type="password" onChange={e => setPassword(e.target.value)} />
-          <br />
-          <button onClick={auth}>Login</button>
-        </div>
+        ? <Login screen={screen} setScreen={setScreen} />
         : <View screen={screen} setScreen={setScreen} />
       }
     </div>
@@ -82,7 +62,6 @@ function App() {
 }
 
 export default App;
-
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);

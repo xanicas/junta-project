@@ -58,7 +58,7 @@ const Styles = styled.div`
   }
 
   .pagination {
-    padding: 0.5rem;
+    padding: 0.5rem 0rem;
   }
 `
 
@@ -275,9 +275,14 @@ function Eleitores() {
     })
   }
 
+  const goToCharts = async () => {
+    console.log('click')
+  }
+
   return (
     <Styles>
-      <button onClick={createNewEleitor}>Create new</button>
+      <button type="submit" className="btn btn-primary btn-create" onClick={createNewEleitor}>Create new</button>
+      <button type="submit" className="btn btn-primary btn-create" onClick={goToCharts}>Go to charts</button>
       <Table
         columns={columns}
         data={data.sort((a,b) => a.name > b.name ? 1 : -1)}

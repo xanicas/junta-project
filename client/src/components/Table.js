@@ -170,25 +170,25 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
         This is just a very basic UI implementation:
       */}
       <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+        <button className="btn btn-primary btn-sm" onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+        <button className="btn btn-primary btn-sm" onClick={() => previousPage()} disabled={!canPreviousPage}>
           {'<'}
         </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
+        <button className="btn btn-primary btn-sm" onClick={() => nextPage()} disabled={!canNextPage}>
           {'>'}
         </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+        <button className="btn btn-primary btn-sm" onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
           {'>>'}
         </button>{' '}
-        <span>
+        <span style={{ paddingTop: '8px', paddingRight: '6px' }}>
           Page{' '}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
           </strong>{' '}
         </span>
-        <span>
+        <span style={{ paddingTop: '5px' }}>
           | Go to page:{' '}
           <input
             type="number"
@@ -197,10 +197,10 @@ function Table({ columns, data, updateMyData, skipPageReset }) {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               gotoPage(page)
             }}
-            style={{ width: '100px' }}
+            style={{ width: '70px', marginRight: '6px' }}
           />
         </span>{' '}
-        <select
+        <select className="btn btn-primary dropdown-toggle"
           value={pageSize}
           onChange={e => {
             setPageSize(Number(e.target.value))
